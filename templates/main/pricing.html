@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paket Langganan - {{ app_name }}</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            color: white !important;
+            padding: 0.8rem 1.5rem !important;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding-top: 100px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Hero Section */
+        .pricing-hero {
+            text-align: center;
+            padding: 60px 0;
+            background: white;
+            margin: 2rem 0;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .pricing-hero h1 {
+            font-size: 3rem;
+            color: #333;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .pricing-hero p {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .discount-banner {
+            display: inline-block;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Pricing Cards */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .pricing-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+
+        .pricing-card.popular {
+            border-color: #667eea;
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+        }
+
+        .pricing-card.popular::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: 30px;
+            right: -41px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+            padding: 0.5rem 2rem;
+            transform: rotate(45deg);
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(238, 90, 82, 0.3);
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .plan-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .plan-duration {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .price-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .original-price {
+            font-size: 1.2rem;
+            color: #999;
+            text-decoration: line-through;
+            margin-bottom: 0.5rem;
+        }
+
+        .discounted-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .discount-percentage {
+            display: inline-block;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .savings {
+            color: #28a745;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .features-list {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .features-list li {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .features-list li:last-child {
+            border-bottom: none;
+        }
+
+        .features-list li i {
+            color: #28a745;
+            font-size: 1.1rem;
+        }
+
+        .choose-btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+
+        .choose-btn.primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .choose-btn.secondary {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .choose-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .choose-btn.primary:hover {
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            background: white;
+            padding: 4rem 2rem;
+            margin: 3rem 0;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .faq-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 3rem;
+        }
+
+        .faq-item {
+            margin-bottom: 1.5rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background: #e9ecef;
+        }
+
+        .faq-answer {
+            padding: 1.5rem;
+            display: none;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+
+        /* Money Back Guarantee */
+        .guarantee-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            border-radius: 20px;
+            margin: 3rem 0;
+        }
+
+        .guarantee-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .guarantee-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .guarantee-text {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .pricing-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .pricing-card.popular {
+                transform: none;
+            }
+
+            .popular-badge {
+                top: 15px;
+                right: -25px;
+                padding: 0.3rem 1.5rem;
+                font-size: 0.8rem;
+            }
+
+            .discounted-price {
+                font-size: 2rem;
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+        }
+
+        /* Format Rupiah */
+        .rupiah {
+            font-size: 0.7em;
+            vertical-align: top;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <a href="/" class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                {{ app_name }}
+            </a>
+            <ul class="nav-links">
+                <li><a href="/#features">Features</a></li>
+                <li><a href="/#courses">Courses</a></li>
+                <li><a href="/#about">About</a></li>
+                <li><a href="/#contact">Contact</a></li>
+            </ul>
+            <a href="/" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Kembali
+            </a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Pricing Hero -->
+            <section class="pricing-hero">
+                <div class="discount-banner">
+                    <i class="fas fa-fire"></i>
+                    Diskon Hingga 58% - Penawaran Terbatas!
+                </div>
+                <h1>Pilih Paket Langganan</h1>
+                <p>Mulai perjalanan belajar Anda dengan {{ app_name }}. Pilih paket yang sesuai dengan kebutuhan dan dapatkan akses ke ribuan kursus berkualitas tinggi.</p>
+            </section>
+
+            <!-- Pricing Cards -->
+            <section class="pricing-grid">
+                {% for plan in pricing_plans %}
+                <div class="pricing-card {% if plan.popular %}popular{% endif %}">
+                    {% if plan.popular %}
+                    <div class="popular-badge">{{ plan.badge }}</div>
+                    {% endif %}
+                    
+                    <div class="card-header">
+                        <h3 class="plan-name">Paket {{ plan.name }}</h3>
+                        <p class="plan-duration">{{ plan.duration }}</p>
+                    </div>
+
+                    <div class="price-section">
+                        <div class="original-price">
+                            <span class="rupiah">Rp</span> {{ plan.original_price }}
+                        </div>
+                        <div class="discounted-price">
+                            <span class="rupiah">Rp</span> {{ plan.discounted_price }}
+                        </div>
+                        <div class="discount-percentage">
+                            Hemat {{ plan.discount_percentage }}%
+                        </div>
+                        <div class="savings">
+                            <i class="fas fa-tag"></i>
+                            Hemat Rp {{ plan.savings }}
+                        </div>
+                    </div>
+
+                    <ul class="features-list">
+                        {% for feature in plan.features %}
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            {{ feature }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                    <a href="#" class="choose-btn {% if plan.popular %}primary{% else %}secondary{% endif %}">
+                        <i class="fas fa-rocket"></i>
+                        Pilih Paket Ini
+                    </a>
+                </div>
+                {% endfor %}
+            </section>
+
+            <!-- Money Back Guarantee -->
+            <section class="guarantee-section">
+                <div class="guarantee-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 class="guarantee-title">Garansi 30 Hari Uang Kembali</h3>
+                <p class="guarantee-text">
+                    Kami yakin dengan kualitas platform kami. Jika Anda tidak puas dalam 30 hari pertama, 
+                    kami akan mengembalikan 100% uang Anda tanpa pertanyaan.
+                </p>
+            </section>
+
+            <!-- FAQ Section -->
+            <section class="faq-section">
+                <h3 class="faq-title">Pertanyaan yang Sering Diajukan</h3>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Apakah saya bisa mengakses semua kursus dengan satu paket?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Ya, semua paket memberikan akses penuh ke seluruh katalog kursus premium kami yang terdiri dari lebih dari 500 kursus berkualitas tinggi.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Bisakah saya mengunduh materi untuk belajar offline?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Tentu saja! Semua paket premium memungkinkan Anda mengunduh video dan materi kursus untuk belajar kapan saja, bahkan tanpa koneksi internet.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Apakah saya akan mendapatkan sertifikat setelah menyelesaikan kursus?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Ya, Anda akan mendapatkan sertifikat resmi yang dapat dibagikan di LinkedIn dan digunakan untuk meningkatkan profil profesional Anda.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Bagaimana cara mengupgrade atau downgrade paket saya?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Anda dapat mengubah paket langganan kapan saja melalui dashboard akun Anda. Tim support kami juga siap membantu Anda 24/7.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Apakah ada biaya tersembunyi?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Tidak ada biaya tersembunyi sama sekali. Harga yang Anda lihat adalah harga final yang akan Anda bayar, sudah termasuk semua fitur yang disebutkan.
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        // FAQ Toggle
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const faqItem = question.parentElement;
+                const isActive = faqItem.classList.contains('active');
+                
+                // Close all FAQ items
+                document.querySelectorAll('.faq-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                // Open clicked item if it wasn't active
+                if (!isActive) {
+                    faqItem.classList.add('active');
+                }
+            });
+        });
+
+        // Format numbers with thousand separators
+        function formatRupiah(number) {
+            return new Intl.NumberFormat('id-ID').format(number);
+        }
+
+        // Add smooth scroll for back button
+        document.querySelector('.back-btn').addEventListener('click', function(e) {
+            if (this.getAttribute('href') === '/') {
+                e.preventDefault();
+                window.location.href = '/';
+            }
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.6s ease forwards';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.pricing-card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // Add hover effect for pricing cards
+        document.querySelectorAll('.pricing-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-15px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                if (this.classList.contains('popular')) {
+                    this.style.transform = 'scale(1.05)';
+                } else {
+                    this.style.transform = 'translateY(0) scale(1)';
+                }
+            });
+        });
+
+        // Animate discount banner
+        const banner = document.querySelector('.discount-banner');
+        setInterval(() => {
+            banner.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                banner.style.transform = 'scale(1)';
+            }, 200);
+        }, 3000);
+    </script>
+</body>
+</html>
