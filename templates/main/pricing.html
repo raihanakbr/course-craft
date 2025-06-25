@@ -504,7 +504,7 @@
                         {% endfor %}
                     </ul>
 
-                    <a href="#" class="choose-btn {% if plan.popular %}primary{% else %}secondary{% endif %}">
+                    <a href="{% url 'payment:package_selection' plan_id=plan.id %}" class="choose-btn {% if plan.popular %}primary{% else %}secondary{% endif %}">
                         <i class="fas fa-rocket"></i>
                         Pilih Paket Ini
                     </a>

@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-=-o)=o6zp@%lv_jd-@@x_=0n!37$+(a=-k=&3nqic@s3)q7psf
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'main'
+    'main',
+    'payment'
 ]
 
 MIDDLEWARE = [
@@ -55,7 +56,7 @@ ROOT_URLCONF = 'coursecraft.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [ BASE_DIR / 'templates' ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -121,3 +122,9 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Xendit Configuration
+# For testing, use your Xendit test API key
+# For production, make sure to use environment variables
+XENDIT_SECRET_KEY = 'xnd_development_ub9DGCjwtCvXT5YaHn1GeBx6lL9AyTiiyVz07sk75Ipa5zRaAWe2LspZ2H3oH00'
+XENDIT_PUBLIC_KEY = 'xnd_public_development_fqlLRWx51iUpvdoEFvpUblY_hHiwQYnzY8c1y6ugtrM76ft8y5JvzyZOlG1'

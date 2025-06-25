@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from payment.models import SubscriptionPlan
 
 def landing_page(request):
     """Landing page view for CourseCraft"""
@@ -32,61 +33,27 @@ def landing_page(request):
 
 def pricing_page(request):
     """Pricing page view for CourseCraft subscription plans"""
+    # Get plans from database
+    subscription_plans = SubscriptionPlan.objects.all().order_by('duration_months')
+    
+    # Convert to format expected by template
+    pricing_plans = []
+    for plan in subscription_plans:
+        pricing_plans.append({
+            'id': plan.id,  # This will be the UUID or database ID
+            'name': plan.name,
+            'duration': plan.name,
+            'original_price': f'Rp {plan.original_price:,.0f}'.replace(',', '.'),
+            'discounted_price': f'Rp {plan.discounted_price:,.0f}'.replace(',', '.'),
+            'discount_percentage': plan.discount_percentage,
+            'features': plan.features,
+            'popular': plan.is_popular,
+            'savings': f'Rp {plan.savings:,.0f}'.replace(',', '.'),
+            'badge': plan.badge if plan.badge else ''
+        })
+    
     context = {
         'app_name': 'CourseCraft',
-        'pricing_plans': [
-            {
-                'name': '1 Bulan',
-                'duration': '1 Bulan',
-                'original_price': 'Rp 300.000',
-                'discounted_price': 'Rp 125.000',
-                'discount_percentage': 58,
-                'features': [
-                    'Akses semua kursus premium',
-                    'Download materi offline',
-                    'Sertifikat resmi',
-                    'Live session dengan mentor',
-                    'Forum diskusi eksklusif'
-                ],
-                'popular': False,
-                'savings': 'Rp 175.000'
-            },
-            {
-                'name': '3 Bulan',
-                'duration': '3 Bulan',
-                'original_price': 'Rp 900.000',
-                'discounted_price': 'Rp 375.000',
-                'discount_percentage': 58,
-                'features': [
-                    'Semua fitur paket 1 bulan',
-                    'Priority support 24/7',
-                    'Akses early access kursus baru',
-                    'Personal learning consultant',
-                    'Career guidance session',
-                    'Portfolio review gratis'
-                ],
-                'popular': True,
-                'savings': 'Rp 525.000',
-                'badge': 'Penawaran Terbaik'
-            },
-            {
-                'name': '6 Bulan',
-                'duration': '6 Bulan',
-                'original_price': 'Rp 1.800.000',
-                'discounted_price': 'Rp 750.000',
-                'discount_percentage': 58,
-                'features': [
-                    'Semua fitur paket 3 bulan',
-                    'Dedicated career mentor',
-                    'Job placement assistance',
-                    'Industry networking events',
-                    'Advanced certification',
-                    '1-on-1 monthly review',
-                    'Lifetime community access'
-                ],
-                'popular': False,
-                'savings': 'Rp 1.050.000'
-            }
-        ]
+        'pricing_plans': pricing_plans
     }
     return render(request, 'main/pricing.html', context)
