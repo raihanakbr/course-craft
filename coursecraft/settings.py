@@ -11,6 +11,11 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +25,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-=-o)=o6zp@%lv_jd-@@x_=0n!37$+(a=-k=&3nqic@s3)q7psf'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-=-o)=o6zp@%lv_jd-@@x_=0n!37$+(a=-k=&3nqic@s3)q7psf')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
 
 
 # Application definition
@@ -118,13 +123,15 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# Media files (user uploaded content)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Xendit Configuration
-# For testing, use your Xendit test API key
-# For production, make sure to use environment variables
-XENDIT_SECRET_KEY = 'xnd_development_ub9DGCjwtCvXT5YaHn1GeBx6lL9AyTiiyVz07sk75Ipa5zRaAWe2LspZ2H3oH00'
-XENDIT_PUBLIC_KEY = 'xnd_public_development_fqlLRWx51iUpvdoEFvpUblY_hHiwQYnzY8c1y6ugtrM76ft8y5JvzyZOlG1'
+XENDIT_SECRET_KEY = os.getenv('XENDIT_SECRET_KEY', 'your-xendit-secret-key')
+WEBHOOK_VERIFICATION_TOKEN = os.getenv('WEBHOOK_VERIFICATION_TOKEN', 'your-webhook-verification-token')

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ video.title }} - {{ course.title }} - {{ app_name }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary" aria-label="Main navigation">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{% url 'landing' %}">
+                <i class="fas fa-graduation-cap me-2"></i>{{ app_name }}
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="{% url 'course_list' %}">Courses</a>
+                {% if user.is_authenticated %}
+                    <a class="nav-link" href="{% url 'my_courses' %}">My Courses</a>
+                    <a class="nav-link" href="{% url 'profile' %}">Profile</a>
+                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                {% else %}
+                    <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    <a class="nav-link" href="{% url 'register' %}">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid my-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'course_list' %}">Courses</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'course_detail' course.slug %}">{{ course.title }}</a></li>
+                <li class="breadcrumb-item active">{{ video.title }}</li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <!-- Video Player Column -->
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-body p-0">
+                        <!-- Video Player Area -->
+                        <div class="video-container" style="background: #000; min-height: 400px;">
+                            {% if video.video_url %}
+                                <!-- For YouTube/Vimeo URLs - you can enhance this with proper embedding -->
+                                <div class="d-flex align-items-center justify-content-center h-100 text-white" style="min-height: 400px;">
+                                    <div class="text-center">
+                                        <i class="fas fa-external-link-alt fa-3x mb-3"></i>
+                                        <h5>Video External</h5>
+                                        <a href="{{ video.video_url }}" target="_blank" class="btn btn-light">
+                                            <i class="fas fa-play me-2"></i>Tonton di {{ video.video_url|slice:":20" }}...
+                                        </a>
+                                    </div>
+                                </div>
+                            {% elif video.video_file %}
+                                <!-- For uploaded video files -->
+                                <video controls class="w-100" style="max-height: 500px;">
+                                    <source src="{{ video.video_file.url }}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            {% else %}
+                                <!-- No video source available -->
+                                <div class="d-flex align-items-center justify-content-center h-100 text-white" style="min-height: 400px;">
+                                    <div class="text-center">
+                                        <i class="fas fa-video-slash fa-3x mb-3"></i>
+                                        <h5>Video Belum Tersedia</h5>
+                                        <p>Video untuk materi ini sedang dalam proses upload.</p>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Info -->
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h4>{{ video.title }}</h4>
+                                <p class="text-muted">{{ course.title }} - Video {{ video.order }}</p>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-primary">{{ video.duration_minutes }} menit</span>
+                                {% if video.is_preview %}
+                                    <span class="badge bg-info">Preview</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        {% if video.description %}
+                            <div class="mb-3">
+                                <h6>Deskripsi Video</h6>
+                                <p>{{ video.description|linebreaks }}</p>
+                            </div>
+                        {% endif %}
+
+                        {% if user.is_authenticated and user_progress %}
+                            <div class="mb-3">
+                                <h6>Progress Anda</h6>
+                                <div class="progress mb-2">
+                                    <div class="progress-bar" role="progressbar" 
+                                         style="width: {{ user_progress.completion_percentage }}%" 
+                                         aria-valuenow="{{ user_progress.completion_percentage }}" 
+                                         aria-valuemin="0" aria-valuemax="100">
+                                        {{ user_progress.completion_percentage|floatformat:1 }}%
+                                    </div>
+                                </div>
+                                {% if user_progress.is_completed %}
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-check me-1"></i>Selesai
+                                    </span>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex gap-2 flex-wrap">
+                            {% if user.is_authenticated and user_progress and not user_progress.is_completed %}
+                                <button class="btn btn-success" onclick="markCompleted()">
+                                    <i class="fas fa-check me-2"></i>Tandai Selesai
+                                </button>
+                            {% endif %}
+                            
+                            <a href="{% url 'course_detail' course.slug %}" class="btn btn-outline-primary">
+                                <i class="fas fa-arrow-left me-2"></i>Kembali ke Course
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course Videos Sidebar -->
+            <div class="col-lg-4">
+                <div class="card sticky-top" style="top: 20px;">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="fas fa-list me-2"></i>Video Course
+                        </h6>
+                    </div>
+                    <div class="card-body p-0" style="max-height: 600px; overflow-y: auto;">
+                        {% if course_videos %}
+                            <div class="list-group list-group-flush">
+                                {% for course_video in course_videos %}
+                                    <div class="list-group-item {% if course_video.id == video.id %}active{% endif %}">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div class="flex-grow-1">
+                                                {% if course_video.is_preview or course_video.id == video.id %}
+                                                    <a href="{% url 'video_detail' course.slug course_video.slug %}" 
+                                                       class="text-decoration-none {% if course_video.id == video.id %}text-white{% endif %}">
+                                                        <strong>{{ course_video.order }}. {{ course_video.title }}</strong>
+                                                    </a>
+                                                {% else %}
+                                                    <span class="{% if course_video.id == video.id %}text-white-50{% else %}text-muted{% endif %}">
+                                                        <i class="fas fa-lock me-1"></i>
+                                                        {{ course_video.order }}. {{ course_video.title }}
+                                                    </span>
+                                                {% endif %}
+                                                
+                                                <div class="small {% if course_video.id == video.id %}text-white-50{% else %}text-muted{% endif %}">
+                                                    {{ course_video.duration_minutes }} menit
+                                                    {% if course_video.is_preview %}
+                                                        <span class="badge bg-info ms-1">Preview</span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            
+                                            {% if user.is_authenticated %}
+                                                <div class="ms-2">
+                                                    {% with course_video.userprogress_set.all|first as progress %}
+                                                        {% if progress.is_completed %}
+                                                            <i class="fas fa-check-circle text-success"></i>
+                                                        {% elif progress %}
+                                                            <i class="fas fa-play-circle text-warning"></i>
+                                                        {% endif %}
+                                                    {% endwith %}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    {% if user.is_authenticated and user_progress %}
+    <script>
+        function markCompleted() {
+            if (confirm('Tandai video ini sebagai selesai?')) {
+                // You can implement AJAX call here to mark video as completed
+                fetch('{% url "video_detail" course.slug video.slug %}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        'action': 'mark_completed'
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Gagal menandai video sebagai selesai');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan');
+                });
+            }
+        }
+
+        // Auto-update progress every 30 seconds when video is playing
+        {% if video.video_file %}
+        document.querySelector('video').addEventListener('timeupdate', function() {
+            const video = this;
+            const progress = (video.currentTime / video.duration) * 100;
+            
+            // Update progress every 10% increment
+            if (progress > 0 && progress % 10 < 1) {
+                updateProgress(video.currentTime, progress);
+            }
+        });
+
+        function updateProgress(watchTime, percentage) {
+            fetch('{% url "video_detail" course.slug video.slug %}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    'action': 'update_progress',
+                    'watch_time': Math.floor(watchTime),
+                    'percentage': Math.floor(percentage)
+                })
+            });
+        }
+        {% endif %}
+    </script>
+    {% endif %}
+</body>
+</html>
