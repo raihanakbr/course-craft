@@ -47,6 +47,17 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            color: white;
+            text-decoration: none;
+        }
+
+        .logo:hover {
+            color: white;
+            text-decoration: none;
+        }
+
+        .logo:visited {
+            color: white;
         }
 
         .nav-links {
@@ -410,26 +421,27 @@
     <!-- Header -->
     <header class="header">
         <nav class="nav">
-            <div class="logo">
+            <a href="{% url 'landing' %}" class="logo">
                 <i class="fas fa-graduation-cap"></i>
                 {{ app_name }}
-            </div>
+            </a>
             <ul class="nav-links">
-                <li><a href="#features">Features</a></li>
-                <li><a href="#courses">Courses</a></li>
-                <li><a href="/pricing/">Pricing</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="{% url 'course_list' %}">Courses</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'my_courses' %}">My Courses</a></li>
+                    <li><a href="{% url 'profile' %}">Profile</a></li>
+                {% endif %}
+                <li><a href="{% url 'pricing' %}">Pricing</a></li>
             </ul>
             {% if user.is_authenticated %}
                 <div class="user-menu">
                     <span class="welcome-text">Halo, {{ user.first_name|default:user.username }}!</span>
-                    <a href="{% url 'profile' %}" class="cta-button" style="margin-right: 10px; background: linear-gradient(45deg, #28a745, #20c997);">
-                        <i class="fas fa-user"></i> Profile
-                    </a>
-                    <a href="{% url 'logout' %}" class="cta-button">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </a>
+                    <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="cta-button" style="border: none; cursor: pointer;">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </form>
                 </div>
             {% else %}
                 <div class="auth-buttons">
@@ -453,13 +465,13 @@
             <h1>{{ tagline }}</h1>
             <p>Transform your career with cutting-edge courses designed by industry experts. Join thousands of learners advancing their skills with {{ app_name }}.</p>
             <div class="hero-buttons">
-                <a href="#" class="btn btn-primary">
+                <a href="{% url 'course_list' %}" class="btn btn-primary">
                     <i class="fas fa-rocket"></i>
                     Start Learning Free
                 </a>
-                <a href="#features" class="btn btn-secondary">
-                    <i class="fas fa-play-circle"></i>
-                    Watch Demo
+                <a href="{% url 'pricing' %}" class="btn btn-secondary">
+                    <i class="fas fa-star"></i>
+                    View Pricing
                 </a>
             </div>
         </div>

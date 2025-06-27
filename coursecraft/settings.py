@@ -132,6 +132,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Login configuration
+LOGIN_URL = '/login/'
+
 # Xendit Configuration
 XENDIT_SECRET_KEY = os.getenv('XENDIT_SECRET_KEY', 'your-xendit-secret-key')
 WEBHOOK_VERIFICATION_TOKEN = os.getenv('WEBHOOK_VERIFICATION_TOKEN', 'your-webhook-verification-token')

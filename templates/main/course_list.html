@@ -4,49 +4,607 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Courses - {{ app_name }}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+            background-color: #f8f9fa;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white !important;
+            padding: 0.8rem 1.5rem !important;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(238, 90, 82, 0.4);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .welcome-text {
+            color: white;
+            font-weight: 500;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Mobile menu toggle */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+            .nav-links {
+                display: none;
+            }
+        }
+
+        /* Main content spacing */
+        .main-content {
+            margin-top: 100px;
+        }
+
+        /* Container and Bootstrap-like utilities */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -0.75rem;
+        }
+
+        .col-lg-3 {
+            flex: 0 0 25%;
+            max-width: 25%;
+            padding: 0 0.75rem;
+        }
+
+        .col-lg-9 {
+            flex: 0 0 75%;
+            max-width: 75%;
+            padding: 0 0.75rem;
+        }
+
+        .my-5 {
+            margin-top: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .mb-3 {
+            margin-bottom: 1rem;
+        }
+
+        .me-2 {
+            margin-right: 0.5rem;
+        }
+
+        .me-1 {
+            margin-right: 0.25rem;
+        }
+
+        .d-flex {
+            display: flex;
+        }
+
+        .justify-content-between {
+            justify-content: space-between;
+        }
+
+        .align-items-center {
+            align-items: center;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-muted {
+            color: #6c757d;
+        }
+
+        .small {
+            font-size: 0.875rem;
+        }
+
+        .w-100 {
+            width: 100%;
+        }
+
+        .py-5 {
+            padding-top: 3rem;
+            padding-bottom: 3rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card-img-top {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .card-title {
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .card-text {
+            margin-bottom: 1rem;
+        }
+
+        .flex-grow-1 {
+            flex-grow: 1;
+        }
+
+        .mt-auto {
+            margin-top: auto;
+        }
+
+        .form-label {
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            display: block;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        /* Grid layout for course cards */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .course-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: all 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .course-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(102, 126, 234, 0.15);
+        }
+
+        .course-card-image {
+            position: relative;
+            height: 220px;
+            overflow: hidden;
+        }
+
+        .course-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .course-card:hover .course-card-image img {
+            transform: scale(1.05);
+        }
+
+        .course-placeholder {
+            width: 100%;
+            height: 220px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 3.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .course-card:hover .course-placeholder {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .course-card-body {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .course-badges {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .course-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #2c3e50;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .course-description {
+            color: #6c757d;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .course-meta {
+            margin-bottom: 1rem;
+        }
+
+        .course-meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .course-meta-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        .course-meta-item i {
+            margin-right: 0.4rem;
+            width: 14px;
+        }
+
+        .difficulty-indicator {
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .difficulty-beginner {
+            color: #28a745;
+        }
+
+        .difficulty-intermediate {
+            color: #ffc107;
+        }
+
+        .difficulty-advanced {
+            color: #dc3545;
+        }
+
+        .course-button {
+            margin-top: auto;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 1.5rem;
+            color: white;
+            font-weight: 500;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .course-button:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Filter sidebar improvements */
+        .filter-sidebar {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .filter-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+        }
+
+        .filter-header h5 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .filter-body {
+            padding: 1.5rem;
+        }
+
+        .filter-form .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-form .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.5rem;
+        }
+
+        .filter-form .form-control,
+        .filter-form .form-select {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .filter-form .form-control:focus,
+        .filter-form .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+        }
+
+        .filter-button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 1.5rem;
+            color: white;
+            font-weight: 500;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .filter-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        /* No courses message */
+        .no-courses {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .no-courses i {
+            color: #e9ecef;
+            margin-bottom: 1.5rem;
+        }
+
+        .no-courses h4 {
+            color: #495057;
+            margin-bottom: 1rem;
+        }
+
+        .no-courses p {
+            color: #6c757d;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 992px) {
+            .col-lg-3, .col-lg-9 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+            
+            .courses-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .courses-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .course-card-body {
+                padding: 1.25rem;
+            }
+        }
+
+        .badge {
+            border-radius: 15px;
+            padding: 0.5rem 1rem;
+        }
+
+        /* Page header */
+        .page-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header h1 i {
+            color: #667eea;
+            margin-right: 1rem;
+        }
+
+        .page-subtitle {
+            color: #6c757d;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="{% url 'landing' %}">
-                <i class="fas fa-graduation-cap me-2"></i>{{ app_name }}
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <a href="{% url 'landing' %}" class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                {{ app_name }}
             </a>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="{% url 'course_list' %}">Courses</a>
+            <ul class="nav-links">
+                <li><a href="{% url 'course_list' %}">Courses</a></li>
                 {% if user.is_authenticated %}
-                    <a class="nav-link" href="{% url 'my_courses' %}">My Courses</a>
-                    <a class="nav-link" href="{% url 'profile' %}">Profile</a>
-                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-                {% else %}
-                    <a class="nav-link" href="{% url 'login' %}">Login</a>
-                    <a class="nav-link" href="{% url 'register' %}">Register</a>
+                    <li><a href="{% url 'my_courses' %}">My Courses</a></li>
+                    <li><a href="{% url 'profile' %}">Profile</a></li>
                 {% endif %}
-            </div>
-        </div>
-    </nav>
+                <li><a href="{% url 'pricing' %}">Pricing</a></li>
+            </ul>
+            {% if user.is_authenticated %}
+                <div class="user-menu">
+                    <span class="welcome-text">Halo, {{ user.first_name|default:user.username }}!</span>
+                    <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="cta-button" style="border: none; cursor: pointer;">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </form>
+                </div>
+            {% else %}
+                <div class="auth-buttons">
+                    <a href="{% url 'login' %}" class="cta-button" style="margin-right: 10px;">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                    <a href="{% url 'register' %}" class="cta-button">
+                        <i class="fas fa-user-plus"></i> Daftar
+                    </a>
+                </div>
+            {% endif %}
+            <button class="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </nav>
+    </header>
 
-    <div class="container my-5">
+    <div class="main-content">
+        <div class="container my-5">
         <div class="row">
             <div class="col-lg-3">
-                <div class="card">
-                    <div class="card-header">
-                        <h5><i class="fas fa-filter me-2"></i>Filter</h5>
+                <div class="filter-sidebar">
+                    <div class="filter-header">
+                        <h5><i class="fas fa-filter"></i> Filter Courses</h5>
                     </div>
-                    <div class="card-body">
-                        <!-- Search -->
-                        <form method="get" class="mb-3">
-                            <div class="mb-3">
-                                <label class="form-label">Search</label>
-                                <input type="text" name="search" class="form-control" 
+                    <div class="filter-body">
+                        <form method="get" class="filter-form">
+                            <div class="form-group">
+                                <label for="search-input" class="form-label">Search</label>
+                                <input type="text" id="search-input" name="search" class="form-control" 
                                        value="{{ search_query|default:'' }}" placeholder="Cari course...">
                             </div>
                             
-                            <!-- Categories -->
-                            <div class="mb-3">
-                                <label class="form-label">Kategori</label>
-                                <select name="category" class="form-select">
+                            <div class="form-group">
+                                <label for="category-select" class="form-label">Kategori</label>
+                                <select id="category-select" name="category" class="form-select">
                                     <option value="">Semua Kategori</option>
                                     {% for category in categories %}
                                         <option value="{{ category.slug }}" 
@@ -57,8 +615,8 @@
                                 </select>
                             </div>
                             
-                            <button type="submit" class="btn btn-primary btn-sm">
-                                <i class="fas fa-search me-1"></i>Filter
+                            <button type="submit" class="filter-button">
+                                <i class="fas fa-search"></i> Filter
                             </button>
                         </form>
                     </div>
@@ -66,73 +624,78 @@
             </div>
             
             <div class="col-lg-9">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2><i class="fas fa-book me-2"></i>Courses</h2>
-                    <small class="text-muted">{{ courses.count }} course ditemukan</small>
+                <div class="page-header">
+                    <h1><i class="fas fa-book"></i> Courses</h1>
+                    <p class="page-subtitle">{{ courses.count }} course ditemukan</p>
                 </div>
 
                 {% if courses %}
-                    <div class="row">
+                    <div class="courses-grid">
                         {% for course in courses %}
-                            <div class="col-md-6 col-lg-4 mb-4">
-                                <div class="card h-100 shadow-sm">
+                            <div class="course-card">
+                                <div class="course-card-image">
                                     {% if course.thumbnail %}
-                                        <img src="{{ course.thumbnail.url }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                                        <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}">
                                     {% else %}
-                                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
-                                            <i class="fas fa-play-circle fa-3x text-muted"></i>
+                                        <div class="course-placeholder">
+                                            <i class="fas fa-play-circle"></i>
                                         </div>
                                     {% endif %}
+                                </div>
+                                
+                                <div class="course-card-body">
+                                    <div class="course-badges">
+                                        <span class="badge" style="background: linear-gradient(45deg, #667eea, #764ba2); color: white;">{{ course.category.name }}</span>
+                                        {% if course.is_premium %}
+                                            <span class="badge" style="background: linear-gradient(45deg, #ffd700, #ffed4e); color: #333;">Premium</span>
+                                        {% else %}
+                                            <span class="badge" style="background: linear-gradient(45deg, #48bb78, #38a169); color: white;">Free</span>
+                                        {% endif %}
+                                    </div>
                                     
-                                    <div class="card-body d-flex flex-column">
-                                        <div class="d-flex justify-content-between align-items-start mb-2">
-                                            <span class="badge bg-primary">{{ course.category.name }}</span>
-                                            {% if course.is_premium %}
-                                                <span class="badge bg-warning">Premium</span>
-                                            {% else %}
-                                                <span class="badge bg-success">Free</span>
-                                            {% endif %}
+                                    <h3 class="course-title">{{ course.title }}</h3>
+                                    <p class="course-description">{{ course.short_description }}</p>
+                                    
+                                    <div class="course-meta">
+                                        <div class="course-meta-row">
+                                            <div class="course-meta-item">
+                                                <i class="fas fa-video"></i>
+                                                {{ course.total_videos }} videos
+                                            </div>
+                                            <div class="course-meta-item">
+                                                <i class="fas fa-clock"></i>
+                                                {{ course.duration_hours }}h
+                                            </div>
                                         </div>
-                                        
-                                        <h5 class="card-title">{{ course.title }}</h5>
-                                        <p class="card-text text-muted small flex-grow-1">{{ course.short_description }}</p>
-                                        
-                                        <div class="mt-auto">
-                                            <div class="d-flex justify-content-between text-muted small mb-2">
-                                                <span><i class="fas fa-video me-1"></i>{{ course.total_videos }} videos</span>
-                                                <span><i class="fas fa-clock me-1"></i>{{ course.duration_hours }}h</span>
+                                        <div class="course-meta-row">
+                                            <div class="difficulty-indicator 
+                                                {% if course.difficulty == 'BEGINNER' %}difficulty-beginner
+                                                {% elif course.difficulty == 'INTERMEDIATE' %}difficulty-intermediate
+                                                {% else %}difficulty-advanced{% endif %}">
+                                                <i class="fas fa-signal"></i>
+                                                {% if course.difficulty == 'BEGINNER' %}Beginner
+                                                {% elif course.difficulty == 'INTERMEDIATE' %}Intermediate
+                                                {% else %}Advanced{% endif %}
                                             </div>
-                                            <div class="d-flex justify-content-between text-muted small mb-3">
-                                                <span>
-                                                    {% if course.difficulty == 'BEGINNER' %}
-                                                        <i class="fas fa-signal text-success"></i> Beginner
-                                                    {% elif course.difficulty == 'INTERMEDIATE' %}
-                                                        <i class="fas fa-signal text-warning"></i> Intermediate
-                                                    {% else %}
-                                                        <i class="fas fa-signal text-danger"></i> Advanced
-                                                    {% endif %}
-                                                </span>
-                                            </div>
-                                            <a href="{% url 'course_detail' course.slug %}" class="btn btn-primary btn-sm w-100">
-                                                Lihat Detail <i class="fas fa-arrow-right ms-1"></i>
-                                            </a>
                                         </div>
                                     </div>
+                                    
+                                    <a href="{% url 'course_detail' course.slug %}" class="course-button">
+                                        Lihat Detail <i class="fas fa-arrow-right" style="margin-left: 0.5rem;"></i>
+                                    </a>
                                 </div>
                             </div>
                         {% endfor %}
                     </div>
                 {% else %}
-                    <div class="text-center py-5">
-                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                    <div class="no-courses">
+                        <i class="fas fa-search fa-4x"></i>
                         <h4>Tidak ada course yang ditemukan</h4>
-                        <p class="text-muted">Coba ubah filter atau kata kunci pencarian Anda.</p>
+                        <p>Coba ubah filter atau kata kunci pencarian Anda untuk menemukan course yang sesuai.</p>
                     </div>
                 {% endif %}
             </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

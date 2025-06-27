@@ -1,3 +1,4 @@
+{% load price_filters %}
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -69,6 +70,59 @@
         .nav-links a:hover {
             background: rgba(255,255,255,0.2);
             transform: translateY(-2px);
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white !important;
+            padding: 0.8rem 1.5rem !important;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(238, 90, 82, 0.4);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .welcome-text {
+            color: white;
+            font-weight: 500;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Mobile menu toggle */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+            .nav-links {
+                display: none;
+            }
         }
 
         .back-btn {
@@ -436,20 +490,41 @@
     <!-- Header -->
     <header class="header">
         <nav class="nav">
-            <a href="/" class="logo">
+            <a href="{% url 'landing' %}" class="logo">
                 <i class="fas fa-graduation-cap"></i>
                 {{ app_name }}
             </a>
             <ul class="nav-links">
-                <li><a href="/#features">Features</a></li>
-                <li><a href="/#courses">Courses</a></li>
-                <li><a href="/#about">About</a></li>
-                <li><a href="/#contact">Contact</a></li>
+                <li><a href="{% url 'course_list' %}">Courses</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'my_courses' %}">My Courses</a></li>
+                    <li><a href="{% url 'profile' %}">Profile</a></li>
+                {% endif %}
+                <li><a href="{% url 'pricing' %}">Pricing</a></li>
             </ul>
-            <a href="/" class="back-btn">
-                <i class="fas fa-arrow-left"></i>
-                Kembali
-            </a>
+            {% if user.is_authenticated %}
+                <div class="user-menu">
+                    <span class="welcome-text">Halo, {{ user.first_name|default:user.username }}!</span>
+                    <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="cta-button" style="border: none; cursor: pointer;">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </form>
+                </div>
+            {% else %}
+                <div class="auth-buttons">
+                    <a href="{% url 'login' %}" class="cta-button" style="margin-right: 10px;">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                    <a href="{% url 'register' %}" class="cta-button">
+                        <i class="fas fa-user-plus"></i> Daftar
+                    </a>
+                </div>
+            {% endif %}
+            <button class="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
         </nav>
     </header>
 
@@ -481,10 +556,10 @@
 
                     <div class="price-section">
                         <div class="original-price">
-                            <span class="rupiah">Rp</span> {{ plan.original_price }}
+                            <span class="rupiah">Rp</span> {{ plan.original_price|format_price }}
                         </div>
                         <div class="discounted-price">
-                            <span class="rupiah">Rp</span> {{ plan.discounted_price }}
+                            <span class="rupiah">Rp</span> {{ plan.discounted_price|format_price }}
                         </div>
                         <div class="discount-percentage">
                             Hemat {{ plan.discount_percentage }}%

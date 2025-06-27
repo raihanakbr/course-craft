@@ -1,3 +1,4 @@
+{% load price_filters %}
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -6,14 +7,30 @@
     <title>Pembayaran Gagal - {{ app_name }}</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .navbar-gradient {
+            background: linear-gradient(135deg, #6B46C1 0%, #9333EA 100%);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #6B46C1 0%, #9333EA 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #553C9A 0%, #7C2D8E 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
+        }
+    </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
     <!-- Header -->
-    <nav class="bg-white shadow-sm border-b">
+    <nav class="navbar-gradient shadow-lg">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
-                    <a href="/" class="text-2xl font-bold text-indigo-600">{{ app_name }}</a>
+                    <a href="/" class="text-2xl font-bold text-white no-underline">{{ app_name }}</a>
                 </div>
             </div>
         </div>
@@ -51,7 +68,7 @@
                     </div>
                     <div class="flex justify-between">
                         <span class="text-gray-600">Total:</span>
-                        <span class="font-semibold">Rp {{ invoice.amount|floatformat:0 }}</span>
+                        <span class="font-semibold">Rp {{ invoice.amount|format_price }}</span>
                     </div>
                     <div class="flex justify-between">
                         <span class="text-gray-600">Status:</span>
@@ -87,16 +104,16 @@
             <!-- Action Buttons -->
             <div class="space-y-4 sm:space-y-0 sm:space-x-4 sm:flex sm:justify-center">
                 {% if invoice %}
-                <a href="{% url 'payment:package_selection' plan_id=invoice.subscription_plan.id %}" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                <a href="{% url 'payment:package_selection' plan_id=invoice.subscription_plan.id %}" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white btn-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all">
                     <i class="fas fa-redo mr-2"></i>
                     Coba Lagi
                 </a>
                 {% endif %}
-                <a href="/pricing/" class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                <a href="/pricing/" class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors">
                     <i class="fas fa-arrow-left mr-2"></i>
                     Pilih Paket Lain
                 </a>
-                <a href="/" class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                <a href="/" class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors">
                     <i class="fas fa-home mr-2"></i>
                     Kembali ke Beranda
                 </a>
@@ -109,11 +126,11 @@
                 Butuh bantuan? Hubungi tim support kami
             </p>
             <div class="flex justify-center space-x-6 text-sm">
-                <a href="mailto:support@coursecraft.com" class="text-indigo-600 hover:text-indigo-500">
+                <a href="mailto:support@coursecraft.com" class="text-purple-600 hover:text-purple-500">
                     <i class="fas fa-envelope mr-1"></i>
                     support@coursecraft.com
                 </a>
-                <a href="tel:+6281234567890" class="text-indigo-600 hover:text-indigo-500">
+                <a href="tel:+6281234567890" class="text-purple-600 hover:text-purple-500">
                     <i class="fas fa-phone mr-1"></i>
                     +62 812-3456-7890
                 </a>

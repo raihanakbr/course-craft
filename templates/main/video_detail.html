@@ -4,30 +4,628 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ video.title }} - {{ course.title }} - {{ app_name }}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+            background-color: #f8f9fa;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white !important;
+            padding: 0.8rem 1.5rem !important;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(238, 90, 82, 0.4);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .welcome-text {
+            color: white;
+            font-weight: 500;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Mobile menu toggle */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+            .nav-links {
+                display: none;
+            }
+        }
+
+        /* Main content spacing */
+        .main-content {
+            margin-top: 100px;
+        }
+
+        /* Container and Bootstrap-like utilities */
+        .container, .container-fluid {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -0.75rem;
+        }
+
+        .col-lg-8 {
+            flex: 0 0 66.666667%;
+            max-width: 66.666667%;
+            padding: 0 0.75rem;
+        }
+
+        .col-lg-4 {
+            flex: 0 0 33.333333%;
+            max-width: 33.333333%;
+            padding: 0 0.75rem;
+        }
+
+        .my-4 {
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .mt-3 {
+            margin-top: 1rem;
+        }
+
+        .mb-3 {
+            margin-bottom: 1rem;
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .me-2 {
+            margin-right: 0.5rem;
+        }
+
+        .me-1 {
+            margin-right: 0.25rem;
+        }
+
+        .ms-2 {
+            margin-left: 0.5rem;
+        }
+
+        .p-0 {
+            padding: 0;
+        }
+
+        .d-flex {
+            display: flex;
+        }
+
+        .justify-content-between {
+            justify-content: space-between;
+        }
+
+        .justify-content-center {
+            justify-content: center;
+        }
+
+        .align-items-center {
+            align-items: center;
+        }
+
+        .align-items-start {
+            align-items: flex-start;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-end {
+            text-align: right;
+        }
+
+        .text-white {
+            color: white;
+        }
+
+        .text-muted {
+            color: #6c757d;
+        }
+
+        .text-white-50 {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .w-100 {
+            width: 100%;
+        }
+
+        .h-100 {
+            height: 100%;
+        }
+
+        .gap-2 {
+            gap: 0.5rem;
+        }
+
+        .flex-wrap {
+            flex-wrap: wrap;
+        }
+
+        .bg-info {
+            background-color: #17a2b8;
+        }
+
+        .fa-3x {
+            font-size: 3em;
+        }
+
+        .active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        /* Video Player Styles */
+        .video-player-container {
+            position: relative;
+            width: 100%;
+            background: #000;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .video-player {
+            width: 100%;
+            height: auto;
+            min-height: 400px;
+            display: block;
+        }
+
+        .video-placeholder {
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            color: white;
+        }
+
+        /* Card styles */
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 25px;
+            padding: 0.7rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            border: none;
+            border-radius: 25px;
+            padding: 0.7rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+
+        .btn-outline-primary {
+            border: 2px solid #667eea;
+            color: #667eea;
+            border-radius: 25px;
+            padding: 0.7rem 1.5rem;
+            transition: all 0.3s ease;
+            background: transparent;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-outline-primary:hover {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .badge {
+            border-radius: 15px;
+            padding: 0.5rem 1rem;
+        }
+
+        .progress {
+            border-radius: 10px;
+            height: 8px;
+        }
+
+        .progress-bar {
+            border-radius: 10px;
+            background: linear-gradient(90deg, #28a745, #20c997);
+        }
+
+        /* Breadcrumb styling */
+        .breadcrumb {
+            background: transparent;
+            padding: 0;
+        }
+
+        .breadcrumb-item a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .breadcrumb-item a:hover {
+            color: #764ba2;
+        }
+
+        /* Video container */
+        .video-container {
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        /* Video Info Card */
+        .video-info-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .video-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .video-subtitle {
+            color: #6c757d;
+            font-size: 1rem;
+        }
+
+        .video-badges {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .video-description {
+            margin-bottom: 1.5rem;
+        }
+
+        .video-description h6 {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #333;
+        }
+
+        .progress-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-section h6 {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #333;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* Course Videos Sidebar */
+        .course-videos-sidebar {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: sticky;
+            top: 120px;
+        }
+
+        .sidebar-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .sidebar-header h6 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .videos-list {
+            max-height: 600px;
+            overflow-y: auto;
+            padding: 0;
+        }
+
+        .video-list-item {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .video-list-item:hover {
+            background: #f8f9fa;
+        }
+
+        .video-list-item.current-video {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .video-list-item.current-video:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .video-item-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .video-item-info {
+            flex-grow: 1;
+            margin-right: 1rem;
+        }
+
+        .video-item-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .video-item-title:hover {
+            color: inherit;
+        }
+
+        .video-item-meta {
+            font-size: 0.875rem;
+            opacity: 0.8;
+        }
+
+        .video-item-status {
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 992px) {
+            .col-lg-8, .col-lg-4 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+            
+            .course-videos-sidebar {
+                position: static;
+                margin-top: 2rem;
+            }
+
+            .video-meta {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .video-badges {
+                justify-content: flex-start;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container-fluid {
+                padding: 0 0.5rem;
+            }
+
+            .video-player-container {
+                margin: 0 -0.5rem 1.5rem -0.5rem;
+                border-radius: 0;
+            }
+
+            .video-info-card {
+                margin: 0 -0.5rem 1.5rem -0.5rem;
+                border-radius: 0;
+            }
+        }
+
+        /* List group styling */
+        .list-group-item {
+            border: none;
+            border-bottom: 1px solid #eee;
+        }
+
+        .list-group-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: transparent;
+        }
+
+        /* Responsive layout */
+        .container-fluid {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 992px) {
+            .col-lg-8, .col-lg-4 {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary" aria-label="Main navigation">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="{% url 'landing' %}">
-                <i class="fas fa-graduation-cap me-2"></i>{{ app_name }}
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <a href="{% url 'landing' %}" class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                {{ app_name }}
             </a>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="{% url 'course_list' %}">Courses</a>
+            <ul class="nav-links">
+                <li><a href="{% url 'course_list' %}">Courses</a></li>
                 {% if user.is_authenticated %}
-                    <a class="nav-link" href="{% url 'my_courses' %}">My Courses</a>
-                    <a class="nav-link" href="{% url 'profile' %}">Profile</a>
-                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-                {% else %}
-                    <a class="nav-link" href="{% url 'login' %}">Login</a>
-                    <a class="nav-link" href="{% url 'register' %}">Register</a>
+                    <li><a href="{% url 'my_courses' %}">My Courses</a></li>
+                    <li><a href="{% url 'profile' %}">Profile</a></li>
                 {% endif %}
-            </div>
-        </div>
-    </nav>
+                <li><a href="{% url 'pricing' %}">Pricing</a></li>
+            </ul>
+            {% if user.is_authenticated %}
+                <div class="user-menu">
+                    <span class="welcome-text">Halo, {{ user.first_name|default:user.username }}!</span>
+                    <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="cta-button" style="border: none; cursor: pointer;">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </form>
+                </div>
+            {% else %}
+                <div class="auth-buttons">
+                    <a href="{% url 'login' %}" class="cta-button" style="margin-right: 10px;">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                    <a href="{% url 'register' %}" class="cta-button">
+                        <i class="fas fa-user-plus"></i> Daftar
+                    </a>
+                </div>
+            {% endif %}
+            <button class="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </nav>
+    </header>
 
-    <div class="container-fluid my-4">
+    <div class="main-content">
+        <div class="container-fluid my-4">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{% url 'course_list' %}">Courses</a></li>
@@ -39,157 +637,154 @@
         <div class="row">
             <!-- Video Player Column -->
             <div class="col-lg-8">
-                <div class="card">
-                    <div class="card-body p-0">
-                        <!-- Video Player Area -->
-                        <div class="video-container" style="background: #000; min-height: 400px;">
-                            {% if video.video_url %}
-                                <!-- For YouTube/Vimeo URLs - you can enhance this with proper embedding -->
-                                <div class="d-flex align-items-center justify-content-center h-100 text-white" style="min-height: 400px;">
-                                    <div class="text-center">
-                                        <i class="fas fa-external-link-alt fa-3x mb-3"></i>
-                                        <h5>Video External</h5>
-                                        <a href="{{ video.video_url }}" target="_blank" class="btn btn-light">
-                                            <i class="fas fa-play me-2"></i>Tonton di {{ video.video_url|slice:":20" }}...
-                                        </a>
-                                    </div>
-                                </div>
-                            {% elif video.video_file %}
-                                <!-- For uploaded video files -->
-                                <video controls class="w-100" style="max-height: 500px;">
-                                    <source src="{{ video.video_file.url }}" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                            {% else %}
-                                <!-- No video source available -->
-                                <div class="d-flex align-items-center justify-content-center h-100 text-white" style="min-height: 400px;">
-                                    <div class="text-center">
-                                        <i class="fas fa-video-slash fa-3x mb-3"></i>
-                                        <h5>Video Belum Tersedia</h5>
-                                        <p>Video untuk materi ini sedang dalam proses upload.</p>
-                                    </div>
-                                </div>
-                            {% endif %}
+                <!-- Video Player -->
+                <div class="video-player-container">
+                    {% if video.video_url %}
+                        <!-- For YouTube/Vimeo URLs -->
+                        <div class="video-placeholder">
+                            <div class="text-center">
+                                <i class="fas fa-external-link-alt fa-3x mb-3"></i>
+                                <h5>Video External</h5>
+                                <a href="{{ video.video_url }}" target="_blank" class="btn btn-outline-primary">
+                                    <i class="fas fa-play me-2"></i>Tonton di {{ video.video_url|slice:":20" }}...
+                                </a>
+                            </div>
                         </div>
-                    </div>
+                    {% elif video.video_file %}
+                        <!-- For uploaded video files -->
+                        <video controls class="video-player">
+                            <source src="{{ video.video_file.url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    {% else %}
+                        <!-- No video source available -->
+                        <div class="video-placeholder">
+                            <div class="text-center">
+                                <i class="fas fa-video-slash fa-3x mb-3"></i>
+                                <h5>Video Belum Tersedia</h5>
+                                <p>Video untuk materi ini sedang dalam proses upload.</p>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
 
                 <!-- Video Info -->
-                <div class="card mt-3">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <div>
-                                <h4>{{ video.title }}</h4>
-                                <p class="text-muted">{{ course.title }} - Video {{ video.order }}</p>
-                            </div>
-                            <div class="text-end">
-                                <span class="badge bg-primary">{{ video.duration_minutes }} menit</span>
-                                {% if video.is_preview %}
-                                    <span class="badge bg-info">Preview</span>
-                                {% endif %}
-                            </div>
+                <div class="video-info-card">
+                    <div class="video-meta">
+                        <div>
+                            <h1 class="video-title">{{ video.title }}</h1>
+                            <p class="video-subtitle">{{ course.title }} - Video {{ video.order }}</p>
                         </div>
-
-                        {% if video.description %}
-                            <div class="mb-3">
-                                <h6>Deskripsi Video</h6>
-                                <p>{{ video.description|linebreaks }}</p>
-                            </div>
-                        {% endif %}
-
-                        {% if user.is_authenticated and user_progress %}
-                            <div class="mb-3">
-                                <h6>Progress Anda</h6>
-                                <div class="progress mb-2">
-                                    <div class="progress-bar" role="progressbar" 
-                                         style="width: {{ user_progress.completion_percentage }}%" 
-                                         aria-valuenow="{{ user_progress.completion_percentage }}" 
-                                         aria-valuemin="0" aria-valuemax="100">
-                                        {{ user_progress.completion_percentage|floatformat:1 }}%
-                                    </div>
-                                </div>
-                                {% if user_progress.is_completed %}
-                                    <span class="badge bg-success">
-                                        <i class="fas fa-check me-1"></i>Selesai
-                                    </span>
-                                {% endif %}
-                            </div>
-                        {% endif %}
-
-                        <!-- Action Buttons -->
-                        <div class="d-flex gap-2 flex-wrap">
-                            {% if user.is_authenticated and user_progress and not user_progress.is_completed %}
-                                <button class="btn btn-success" onclick="markCompleted()">
-                                    <i class="fas fa-check me-2"></i>Tandai Selesai
-                                </button>
+                        <div class="video-badges">
+                            <span class="badge bg-primary">{{ video.duration_minutes }} menit</span>
+                            {% if video.is_preview %}
+                                <span class="badge bg-info">Preview</span>
                             {% endif %}
-                            
-                            <a href="{% url 'course_detail' course.slug %}" class="btn btn-outline-primary">
-                                <i class="fas fa-arrow-left me-2"></i>Kembali ke Course
-                            </a>
                         </div>
+                    </div>
+
+                    {% if video.description %}
+                        <div class="video-description">
+                            <h6>Deskripsi Video</h6>
+                            <p>{{ video.description|linebreaks }}</p>
+                        </div>
+                    {% endif %}
+
+                    {% if user.is_authenticated and user_progress %}
+                        <div class="progress-section">
+                            <h6>Progress Anda</h6>
+                            <div class="progress mb-2">
+                                <div class="progress-bar" role="progressbar"
+                                     aria-valuenow="{{ user_progress.completion_percentage }}" 
+                                     aria-valuemin="0" aria-valuemax="100"
+                                     data-progress="{{ user_progress.completion_percentage }}">
+                                    {{ user_progress.completion_percentage|floatformat:1 }}%
+                                </div>
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        var bar = document.querySelector('.progress-bar[data-progress]');
+                                        if (bar) {
+                                            bar.style.width = bar.getAttribute('data-progress') + '%';
+                                        }
+                                    });
+                                </script>
+                            </div>
+                            {% if user_progress.is_completed %}
+                                <span class="badge bg-success">
+                                    <i class="fas fa-check me-1"></i>Selesai
+                                </span>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        {% if user.is_authenticated and user_progress and not user_progress.is_completed %}
+                            <button class="btn btn-success" onclick="markCompleted()">
+                                <i class="fas fa-check me-2"></i>Tandai Selesai
+                            </button>
+                        {% endif %}
+                        
+                        <a href="{% url 'course_detail' course.slug %}" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left me-2"></i>Kembali ke Course
+                        </a>
                     </div>
                 </div>
             </div>
 
             <!-- Course Videos Sidebar -->
             <div class="col-lg-4">
-                <div class="card sticky-top" style="top: 20px;">
-                    <div class="card-header">
-                        <h6 class="mb-0">
-                            <i class="fas fa-list me-2"></i>Video Course
-                        </h6>
+                <div class="course-videos-sidebar">
+                    <div class="sidebar-header">
+                        <h6><i class="fas fa-list me-2"></i>Video Course</h6>
                     </div>
-                    <div class="card-body p-0" style="max-height: 600px; overflow-y: auto;">
+                    <div class="videos-list">
                         {% if course_videos %}
-                            <div class="list-group list-group-flush">
-                                {% for course_video in course_videos %}
-                                    <div class="list-group-item {% if course_video.id == video.id %}active{% endif %}">
-                                        <div class="d-flex justify-content-between align-items-start">
-                                            <div class="flex-grow-1">
-                                                {% if course_video.is_preview or course_video.id == video.id %}
-                                                    <a href="{% url 'video_detail' course.slug course_video.slug %}" 
-                                                       class="text-decoration-none {% if course_video.id == video.id %}text-white{% endif %}">
-                                                        <strong>{{ course_video.order }}. {{ course_video.title }}</strong>
-                                                    </a>
-                                                {% else %}
-                                                    <span class="{% if course_video.id == video.id %}text-white-50{% else %}text-muted{% endif %}">
-                                                        <i class="fas fa-lock me-1"></i>
-                                                        {{ course_video.order }}. {{ course_video.title }}
-                                                    </span>
-                                                {% endif %}
-                                                
-                                                <div class="small {% if course_video.id == video.id %}text-white-50{% else %}text-muted{% endif %}">
-                                                    {{ course_video.duration_minutes }} menit
-                                                    {% if course_video.is_preview %}
-                                                        <span class="badge bg-info ms-1">Preview</span>
-                                                    {% endif %}
-                                                </div>
-                                            </div>
-                                            
-                                            {% if user.is_authenticated %}
-                                                <div class="ms-2">
-                                                    {% with course_video.userprogress_set.all|first as progress %}
-                                                        {% if progress.is_completed %}
-                                                            <i class="fas fa-check-circle text-success"></i>
-                                                        {% elif progress %}
-                                                            <i class="fas fa-play-circle text-warning"></i>
-                                                        {% endif %}
-                                                    {% endwith %}
-                                                </div>
+                            {% for course_video in course_videos %}
+                                <div class="video-list-item {% if course_video.id == video.id %}current-video{% endif %}">
+                                    <div class="video-item-content">
+                                        <div class="video-item-info">
+                                            {% if course_video.is_preview or course_video.id == video.id %}
+                                                <a href="{% url 'video_detail' course.slug course_video.slug %}" 
+                                                   class="video-item-title">
+                                                    {{ course_video.order }}. {{ course_video.title }}
+                                                </a>
+                                            {% else %}
+                                                <span class="video-item-title text-muted">
+                                                    <i class="fas fa-lock me-1"></i>
+                                                    {{ course_video.order }}. {{ course_video.title }}
+                                                </span>
                                             {% endif %}
+                                            
+                                            <div class="video-item-meta">
+                                                {{ course_video.duration_minutes }} menit
+                                                {% if course_video.is_preview %}
+                                                    <span class="badge bg-info ms-1">Preview</span>
+                                                {% endif %}
+                                            </div>
                                         </div>
+                                        
+                                        {% if user.is_authenticated %}
+                                            <div class="video-item-status">
+                                                {% with course_video.userprogress_set.all|first as progress %}
+                                                    {% if progress.is_completed %}
+                                                        <i class="fas fa-check-circle text-success"></i>
+                                                    {% elif progress %}
+                                                        <i class="fas fa-play-circle text-warning"></i>
+                                                    {% endif %}
+                                                {% endwith %}
+                                            </div>
+                                        {% endif %}
                                     </div>
-                                {% endfor %}
-                            </div>
+                                </div>
+                            {% endfor %}
                         {% endif %}
                     </div>
                 </div>
             </div>
         </div>
+        </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     
     {% if user.is_authenticated and user_progress %}
     <script>
@@ -222,7 +817,7 @@
         }
 
         // Auto-update progress every 30 seconds when video is playing
-        {% if video.video_file %}
+
         document.querySelector('video').addEventListener('timeupdate', function() {
             const video = this;
             const progress = (video.currentTime / video.duration) * 100;
@@ -247,7 +842,6 @@
                 })
             });
         }
-        {% endif %}
     </script>
     {% endif %}
 </body>

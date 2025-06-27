@@ -4,196 +4,891 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Courses - {{ app_name }}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+            background-color: #f8f9fa;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white !important;
+            padding: 0.8rem 1.5rem !important;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(238, 90, 82, 0.4);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .welcome-text {
+            color: white;
+            font-weight: 500;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Mobile menu toggle */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+            .nav-links {
+                display: none;
+            }
+        }
+
+        /* Main content spacing */
+        .main-content {
+            margin-top: 100px;
+        }
+
+        /* Container and Bootstrap-like utilities */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -0.75rem;
+        }
+
+        .col-md-6 {
+            flex: 0 0 50%;
+            max-width: 50%;
+            padding: 0 0.75rem;
+        }
+
+        .col-lg-4 {
+            flex: 0 0 33.333333%;
+            max-width: 33.333333%;
+            padding: 0 0.75rem;
+        }
+
+        .my-5 {
+            margin-top: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .mb-4 {
+            margin-bottom: 1.5rem;
+        }
+
+        .mb-3 {
+            margin-bottom: 1rem;
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .me-2 {
+            margin-right: 0.5rem;
+        }
+
+        .me-1 {
+            margin-right: 0.25rem;
+        }
+
+        .d-flex {
+            display: flex;
+        }
+
+        .justify-content-between {
+            justify-content: space-between;
+        }
+
+        .align-items-center {
+            align-items: center;
+        }
+
+        .align-items-start {
+            align-items: flex-start;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-muted {
+            color: #6c757d;
+        }
+
+        .text-success {
+            color: #28a745;
+        }
+
+        .text-warning {
+            color: #ffc107;
+        }
+
+        .text-danger {
+            color: #dc3545;
+        }
+
+        .small {
+            font-size: 0.875rem;
+        }
+
+        .w-100 {
+            width: 100%;
+        }
+
+        .h-100 {
+            height: 100%;
+        }
+
+        .shadow-sm {
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+
+        .flex-column {
+            flex-direction: column;
+        }
+
+        .flex-grow-1 {
+            flex-grow: 1;
+        }
+
+        .mt-auto {
+            margin-top: auto;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card-img-top {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .card-title {
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .card-text {
+            margin-bottom: 1rem;
+        }
+
+        .bg-light {
+            background-color: #f8f9fa;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .btn-lg {
+            padding: 1rem 2rem;
+            font-size: 1.125rem;
+        }
+
+        @media (max-width: 992px) {
+            .col-lg-4 {
+                flex: 0 0 50%;
+                max-width: 50%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .col-md-6, .col-lg-4 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+        }
+
+        /* Modern card styles */
+        .course-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: all 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            margin-bottom: 2rem;
+        }
+
+        .course-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(102, 126, 234, 0.15);
+        }
+
+        .course-card-image {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .course-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .course-card:hover .course-card-image img {
+            transform: scale(1.05);
+        }
+
+        .course-placeholder {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 3.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .course-card:hover .course-placeholder {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .course-card-body {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .course-badges {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .course-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #2c3e50;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .course-description {
+            color: #6c757d;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .progress-container {
+            margin-bottom: 1rem;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .progress-percentage {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .progress {
+            border-radius: 10px;
+            height: 8px;
+            background-color: #f1f3f5;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            border-radius: 10px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.6s ease;
+        }
+
+        .course-meta {
+            margin-bottom: 1rem;
+        }
+
+        .course-meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .course-meta-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        .course-meta-item i {
+            margin-right: 0.4rem;
+            width: 14px;
+        }
+
+        .difficulty-indicator {
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .difficulty-beginner {
+            color: #28a745;
+        }
+
+        .difficulty-intermediate {
+            color: #ffc107;
+        }
+
+        .difficulty-advanced {
+            color: #dc3545;
+        }
+
+        .enrolled-date {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
+        .course-actions {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 1.5rem;
+            color: white;
+            font-weight: 500;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 1.5rem;
+            color: white;
+            font-weight: 500;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .btn-success:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-outline-secondary {
+            background: transparent;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 0.6rem 1.5rem;
+            color: #6c757d;
+            font-weight: 500;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-secondary:hover {
+            background: #f8f9fa;
+            border-color: #667eea;
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .badge {
+            border-radius: 15px;
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        /* Statistics card */
+        .stats-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-top: 3rem;
+        }
+
+        .stats-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+        }
+
+        .stats-header h5 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+
+        .stats-body {
+            padding: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .empty-state i {
+            color: #e9ecef;
+            margin-bottom: 1.5rem;
+        }
+
+        .empty-state h3 {
+            color: #495057;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .empty-state p {
+            color: #6c757d;
+            max-width: 400px;
+            margin: 0 auto 2rem;
+        }
+
+        /* Page header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f1f3f5;
+        }
+
+        .page-title {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .page-title i {
+            color: #667eea;
+            margin-right: 1rem;
+        }
+
+        .browse-button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 25px;
+            padding: 0.8rem 1.5rem;
+            color: white;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .browse-button:hover {
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .browse-button i {
+            font-size: 1rem;
+            line-height: 1;
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary" aria-label="Main navigation">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="{% url 'landing' %}">
-                <i class="fas fa-graduation-cap me-2"></i>{{ app_name }}
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <a href="{% url 'landing' %}" class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                {{ app_name }}
             </a>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="{% url 'course_list' %}">Courses</a>
+            <ul class="nav-links">
+                <li><a href="{% url 'course_list' %}">Courses</a></li>
                 {% if user.is_authenticated %}
-                    <a class="nav-link active" href="{% url 'my_courses' %}">My Courses</a>
-                    <a class="nav-link" href="{% url 'profile' %}">Profile</a>
-                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-                {% else %}
-                    <a class="nav-link" href="{% url 'login' %}">Login</a>
-                    <a class="nav-link" href="{% url 'register' %}">Register</a>
+                    <li><a href="{% url 'my_courses' %}">My Courses</a></li>
+                    <li><a href="{% url 'profile' %}">Profile</a></li>
                 {% endif %}
+                <li><a href="{% url 'pricing' %}">Pricing</a></li>
+            </ul>
+            {% if user.is_authenticated %}
+                <div class="user-menu">
+                    <span class="welcome-text">Halo, {{ user.first_name|default:user.username }}!</span>
+                    <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="cta-button" style="border: none; cursor: pointer;">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </form>
+                </div>
+            {% else %}
+                <div class="auth-buttons">
+                    <a href="{% url 'login' %}" class="cta-button" style="margin-right: 10px;">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                    <a href="{% url 'register' %}" class="cta-button">
+                        <i class="fas fa-user-plus"></i> Daftar
+                    </a>
+                </div>
+            {% endif %}
+            <button class="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </nav>
+    </header>
+
+    <div class="main-content">
+        <div class="container my-5">
+            <div class="page-header">
+                <h1 class="page-title">
+                    <i class="fas fa-graduation-cap"></i>My Courses
+                </h1>
+                <a href="{% url 'course_list' %}" class="browse-button">
+                    <i class="fas fa-plus"></i>Browse More Courses
+                </a>
             </div>
-        </div>
-    </nav>
 
-    <div class="container my-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2><i class="fas fa-graduation-cap me-2"></i>My Courses</h2>
-            <a href="{% url 'course_list' %}" class="btn btn-primary">
-                <i class="fas fa-plus me-2"></i>Browse More Courses
-            </a>
-        </div>
-
-        {% if enrollments %}
-            <div class="row">
-                {% for enrollment in enrollments %}
-                    <div class="col-md-6 col-lg-4 mb-4">
-                        <div class="card h-100 shadow-sm">
-                            {% if enrollment.course.thumbnail %}
-                                <img src="{{ enrollment.course.thumbnail.url }}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="{{ enrollment.course.title }}">
-                            {% else %}
-                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
-                                    <i class="fas fa-play-circle fa-3x text-muted"></i>
-                                </div>
-                            {% endif %}
-                            
-                            <div class="card-body d-flex flex-column">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <span class="badge bg-primary">{{ enrollment.course.category.name }}</span>
-                                    {% if enrollment.course.is_premium %}
-                                        <span class="badge bg-warning">Premium</span>
+            {% if enrollments %}
+                <div class="row">
+                    {% for enrollment in enrollments %}
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="course-card">
+                                <div class="course-card-image">
+                                    {% if enrollment.course.thumbnail %}
+                                        <img src="{{ enrollment.course.thumbnail.url }}" alt="{{ enrollment.course.title }}">
                                     {% else %}
-                                        <span class="badge bg-success">Free</span>
+                                        <div class="course-placeholder">
+                                            <i class="fas fa-play-circle"></i>
+                                        </div>
                                     {% endif %}
                                 </div>
                                 
-                                <h5 class="card-title">{{ enrollment.course.title }}</h5>
-                                <p class="card-text text-muted small flex-grow-1">{{ enrollment.course.short_description }}</p>
-                                
-                                <!-- Progress Bar -->
-                                <div class="mb-3">
-                                    <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <small class="text-muted">Progress</small>
-                                        <small class="text-muted">{{ enrollment.progress_percentage|floatformat:1 }}%</small>
-                                    </div>
-                                    <div class="progress" style="height: 8px;">
-                                        <div class="progress-bar" role="progressbar" 
-                                             style="width: {{ enrollment.progress_percentage }}%" 
-                                             aria-valuenow="{{ enrollment.progress_percentage }}" 
-                                             aria-valuemin="0" aria-valuemax="100">
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="mt-auto">
-                                    <div class="d-flex justify-content-between text-muted small mb-2">
-                                        <span><i class="fas fa-video me-1"></i>{{ enrollment.course.total_videos }} videos</span>
-                                        <span><i class="fas fa-clock me-1"></i>{{ enrollment.course.duration_hours }}h</span>
-                                    </div>
-                                    <div class="d-flex justify-content-between text-muted small mb-3">
-                                        <span>
-                                            {% if enrollment.course.difficulty == 'BEGINNER' %}
-                                                <i class="fas fa-signal text-success"></i> Beginner
-                                            {% elif enrollment.course.difficulty == 'INTERMEDIATE' %}
-                                                <i class="fas fa-signal text-warning"></i> Intermediate
-                                            {% else %}
-                                                <i class="fas fa-signal text-danger"></i> Advanced
-                                            {% endif %}
-                                        </span>
-                                        <small class="text-muted">Enrolled: {{ enrollment.enrolled_at|date:"M d, Y" }}</small>
+                                <div class="course-card-body">
+                                    <div class="course-badges">
+                                        <span class="badge" style="background: linear-gradient(45deg, #667eea, #764ba2); color: white;">{{ enrollment.course.category.name }}</span>
+                                        {% if enrollment.course.is_premium %}
+                                            <span class="badge" style="background: linear-gradient(45deg, #ffd700, #ffed4e); color: #333;">Premium</span>
+                                        {% else %}
+                                            <span class="badge" style="background: linear-gradient(45deg, #48bb78, #38a169); color: white;">Free</span>
+                                        {% endif %}
                                     </div>
                                     
-                                    <div class="d-grid gap-2">
+                                    <h3 class="course-title">{{ enrollment.course.title }}</h3>
+                                    <p class="course-description">{{ enrollment.course.short_description }}</p>
+                                    
+                                    <div class="progress-container">
+                                        <div class="progress-header">
+                                            <span class="progress-label">Progress</span>
+                                            <span class="progress-percentage">{{ enrollment.progress_percentage|floatformat:1 }}%</span>
+                                        </div>
+                                        <div class="progress">
+                                            <div class="progress-bar" style="width: {{ enrollment.progress_percentage }}%"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="course-meta">
+                                        <div class="course-meta-row">
+                                            <div class="course-meta-item">
+                                                <i class="fas fa-video"></i>
+                                                {{ enrollment.course.total_videos }} videos
+                                            </div>
+                                            <div class="course-meta-item">
+                                                <i class="fas fa-clock"></i>
+                                                {{ enrollment.course.duration_hours }}h
+                                            </div>
+                                        </div>
+                                        <div class="course-meta-row">
+                                            <div class="difficulty-indicator 
+                                                {% if enrollment.course.difficulty == 'BEGINNER' %}difficulty-beginner
+                                                {% elif enrollment.course.difficulty == 'INTERMEDIATE' %}difficulty-intermediate
+                                                {% else %}difficulty-advanced{% endif %}">
+                                                <i class="fas fa-signal"></i>
+                                                {% if enrollment.course.difficulty == 'BEGINNER' %}Beginner
+                                                {% elif enrollment.course.difficulty == 'INTERMEDIATE' %}Intermediate
+                                                {% else %}Advanced{% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="enrolled-date">
+                                        <i class="fas fa-calendar-alt"></i> Enrolled: {{ enrollment.enrolled_at|date:"M d, Y" }}
+                                    </div>
+                                    
+                                    <div class="course-actions">
                                         {% if enrollment.progress_percentage > 0 %}
-                                            <a href="{% url 'course_detail' enrollment.course.slug %}" class="btn btn-success btn-sm">
-                                                <i class="fas fa-play me-2"></i>Continue Learning
+                                            <a href="{% url 'course_detail' enrollment.course.slug %}" class="btn-success">
+                                                <i class="fas fa-play"></i> Continue Learning
                                             </a>
                                         {% else %}
-                                            <a href="{% url 'course_detail' enrollment.course.slug %}" class="btn btn-primary btn-sm">
-                                                <i class="fas fa-play me-2"></i>Start Learning
+                                            <a href="{% url 'course_detail' enrollment.course.slug %}" class="btn-primary">
+                                                <i class="fas fa-play"></i> Start Learning
                                             </a>
                                         {% endif %}
-                                        <a href="{% url 'course_detail' enrollment.course.slug %}" class="btn btn-outline-secondary btn-sm">
-                                            <i class="fas fa-info-circle me-2"></i>Course Details
+                                        <a href="{% url 'course_detail' enrollment.course.slug %}" class="btn-outline-secondary">
+                                            <i class="fas fa-info-circle"></i> Course Details
                                         </a>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Learning Statistics -->
+                <div class="stats-card">
+                    <div class="stats-header">
+                        <h5><i class="fas fa-chart-line"></i> Learning Statistics</h5>
                     </div>
-                {% endfor %}
-            </div>
-            
-            <!-- Overall Statistics -->
-            <div class="row mt-5">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Learning Statistics</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row text-center">
-                                <div class="col-md-3">
-                                    <div class="mb-3">
-                                        <i class="fas fa-graduation-cap fa-2x text-primary mb-2"></i>
-                                        <h4>{{ enrollments.count }}</h4>
-                                        <small class="text-muted">Enrolled Courses</small>
-                                    </div>
+                    <div class="stats-body">
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-icon">
+                                    <i class="fas fa-graduation-cap" style="color: #667eea;"></i>
                                 </div>
-                                <div class="col-md-3">
-                                    <div class="mb-3">
-                                        <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
-                                        <h4>
-                                            {% with completed_count=0 %}
-                                                {% for enrollment in enrollments %}
-                                                    {% if enrollment.progress_percentage == 100 %}
-                                                        {% with completed_count=completed_count|add:1 %}{% endwith %}
-                                                    {% endif %}
-                                                {% endfor %}
-                                                {{ completed_count }}
-                                            {% endwith %}
-                                        </h4>
-                                        <small class="text-muted">Completed Courses</small>
-                                    </div>
+                                <div class="stat-number">{{ enrollments.count }}</div>
+                                <div class="stat-label">Enrolled Courses</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-icon">
+                                    <i class="fas fa-check-circle" style="color: #28a745;"></i>
                                 </div>
-                                <div class="col-md-3">
-                                    <div class="mb-3">
-                                        <i class="fas fa-play-circle fa-2x text-warning mb-2"></i>
-                                        <h4>
-                                            {% with in_progress_count=0 %}
-                                                {% for enrollment in enrollments %}
-                                                    {% if enrollment.progress_percentage > 0 and enrollment.progress_percentage < 100 %}
-                                                        {% with in_progress_count=in_progress_count|add:1 %}{% endwith %}
-                                                    {% endif %}
-                                                {% endfor %}
-                                                {{ in_progress_count }}
-                                            {% endwith %}
-                                        </h4>
-                                        <small class="text-muted">In Progress</small>
-                                    </div>
+                                <div class="stat-number">
+                                    {% with completed_count=0 %}
+                                        {% for enrollment in enrollments %}
+                                            {% if enrollment.progress_percentage == 100 %}
+                                                {% with completed_count=completed_count|add:1 %}{% endwith %}
+                                            {% endif %}
+                                        {% endfor %}
+                                        {{ completed_count }}
+                                    {% endwith %}
                                 </div>
-                                <div class="col-md-3">
-                                    <div class="mb-3">
-                                        <i class="fas fa-clock fa-2x text-info mb-2"></i>
-                                        <h4>
-                                            {% with total_hours=0 %}
-                                                {% for enrollment in enrollments %}
-                                                    {% with total_hours=total_hours|add:enrollment.course.duration_hours %}{% endwith %}
-                                                {% endfor %}
-                                                {{ total_hours }}h
-                                            {% endwith %}
-                                        </h4>
-                                        <small class="text-muted">Total Content</small>
-                                    </div>
+                                <div class="stat-label">Completed Courses</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-icon">
+                                    <i class="fas fa-play-circle" style="color: #ffc107;"></i>
                                 </div>
+                                <div class="stat-number">
+                                    {% with in_progress_count=0 %}
+                                        {% for enrollment in enrollments %}
+                                            {% if enrollment.progress_percentage > 0 and enrollment.progress_percentage < 100 %}
+                                                {% with in_progress_count=in_progress_count|add:1 %}{% endwith %}
+                                            {% endif %}
+                                        {% endfor %}
+                                        {{ in_progress_count }}
+                                    {% endwith %}
+                                </div>
+                                <div class="stat-label">In Progress</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-icon">
+                                    <i class="fas fa-clock" style="color: #17a2b8;"></i>
+                                </div>
+                                <div class="stat-number">
+                                    {% with total_hours=0 %}
+                                        {% for enrollment in enrollments %}
+                                            {% with total_hours=total_hours|add:enrollment.course.duration_hours %}{% endwith %}
+                                        {% endfor %}
+                                        {{ total_hours }}h
+                                    {% endwith %}
+                                </div>
+                                <div class="stat-label">Total Content</div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        {% else %}
-            <div class="text-center py-5">
-                <i class="fas fa-graduation-cap fa-4x text-muted mb-4"></i>
-                <h3>You haven't enrolled in any courses yet</h3>
-                <p class="text-muted mb-4">Start your learning journey by exploring our available courses.</p>
-                <a href="{% url 'course_list' %}" class="btn btn-primary btn-lg">
-                    <i class="fas fa-search me-2"></i>Browse Courses
-                </a>
-            </div>
-        {% endif %}
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-graduation-cap fa-4x"></i>
+                    <h3>You haven't enrolled in any courses yet</h3>
+                    <p>Start your learning journey by exploring our available courses and unlock your potential.</p>
+                    <a href="{% url 'course_list' %}" class="browse-button">
+                        Browse Courses
+                    </a>
+                </div>
+            {% endif %}
+        </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

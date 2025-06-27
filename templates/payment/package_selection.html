@@ -1,3 +1,4 @@
+{% load price_filters %}
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -6,17 +7,33 @@
     <title>{{ plan.display_name }} - {{ app_name }}</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .navbar-gradient {
+            background: linear-gradient(135deg, #6B46C1 0%, #9333EA 100%);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #6B46C1 0%, #9333EA 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #553C9A 0%, #7C2D8E 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
+        }
+    </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
     <!-- Header -->
-    <nav class="bg-white shadow-sm border-b">
+    <nav class="navbar-gradient shadow-lg">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
-                    <a href="/" class="text-2xl font-bold text-indigo-600">{{ app_name }}</a>
+                    <a href="/" class="text-2xl font-bold text-white no-underline">{{ app_name }}</a>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <a href="/" class="text-gray-600 hover:text-indigo-600 transition-colors">
+                    <a href="/" class="text-white hover:text-purple-200 transition-colors">
                         <i class="fas fa-arrow-left mr-2"></i>Kembali
                     </a>
                 </div>
@@ -33,9 +50,9 @@
                     <p class="text-gray-600 mt-1">Pilih metode pembayaran untuk melanjutkan</p>
                 </div>
                 <div class="text-right">
-                    <div class="text-sm text-gray-500 line-through">{{ plan.original_price }}</div>
-                    <div class="text-2xl font-bold text-indigo-600">{{ plan.discounted_price }}</div>
-                    <div class="text-sm text-green-600 font-semibold">Hemat {{ plan.savings }}</div>
+                    <div class="text-sm text-gray-500 line-through">Rp {{ plan.original_price|format_price }}</div>
+                    <div class="text-2xl font-bold text-purple-600">Rp {{ plan.discounted_price|format_price }}</div>
+                    <div class="text-sm text-green-600 font-semibold">Hemat Rp {{ plan.savings|format_price }}</div>
                 </div>
             </div>
 
@@ -61,8 +78,8 @@
                 <!-- Payment Method Selection -->
                 <div class="space-y-3 mb-6">
                     {% for method in payment_methods %}
-                    <label class="flex items-center p-4 border border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 cursor-pointer transition-all">
-                        <input type="radio" name="payment_method_id" value="{{ method.id }}" required class="mr-4 text-indigo-600">
+                    <label class="flex items-center p-4 border border-gray-200 rounded-lg hover:border-purple-300 hover:bg-purple-50 cursor-pointer transition-all">
+                        <input type="radio" name="payment_method_id" value="{{ method.id }}" required class="mr-4 text-purple-600">
                         <div class="flex items-center flex-1">
                             <i class="{{ method.icon }} text-2xl text-gray-600 mr-4"></i>
                             <div>
@@ -101,7 +118,7 @@
 
                 <!-- Submit Button -->
                 <div class="mt-8 pt-6 border-t">
-                    <button type="submit" class="w-full bg-indigo-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                    <button type="submit" class="w-full btn-primary text-white py-3 px-6 rounded-lg font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
                         <i class="fas fa-credit-card mr-2"></i>
                         Lanjutkan Pembayaran
                     </button>
@@ -135,7 +152,7 @@
     <!-- Loading Overlay -->
     <div id="loadingOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
         <div class="bg-white rounded-lg p-6 flex items-center space-x-4">
-            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
             <div class="text-lg font-semibold">Memproses pembayaran...</div>
         </div>
     </div>
