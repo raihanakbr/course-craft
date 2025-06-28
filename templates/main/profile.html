@@ -221,6 +221,85 @@
             margin-bottom: 2rem;
         }
 
+        .subscription-detail {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 0.8rem;
+            padding: 0.5rem 0;
+        }
+
+        .subscription-detail i {
+            width: 20px;
+            opacity: 0.9;
+        }
+
+        .empty-subscription {
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+
+        .empty-subscription i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+
+        .empty-subscription h5 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .empty-subscription p {
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .btn-lg {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            text-transform: none;
+        }
+
+        .btn-lg:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            color: white;
+            text-decoration: none;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .feature-item i {
+            color: #28a745;
+            font-weight: bold;
+        }
+
         .status-badge {
             padding: 0.5rem 1rem;
             border-radius: 25px;
@@ -324,22 +403,6 @@
                 max-width: 100%;
             }
         }
-
-        .status-active {
-            background: rgba(40, 167, 69, 0.2);
-            color: #28a745;
-            border: 2px solid #28a745;
-        }
-        .status-expired {
-            background: rgba(220, 53, 69, 0.2);
-            color: #dc3545;
-            border: 2px solid #dc3545;
-        }
-        .status-none {
-            background: rgba(108, 117, 125, 0.2);
-            color: #6c757d;
-            border: 2px solid #6c757d;
-        }
     </style>
 </head>
 <body>
@@ -431,10 +494,10 @@
                     
                     {% if subscription %}
                         <div class="subscription-info">
-                            <h5 style="margin-bottom: 1rem; font-size: 1.3rem;">{{ subscription.subscription_plan.display_name }}</h5>
+                            <h5 style="margin-bottom: 1.5rem; font-size: 1.4rem; font-weight: 600;">{{ subscription.subscription_plan.display_name }}</h5>
                             
                             <div class="subscription-detail">
-                                <i class="fas fa-calendar"></i>
+                                <i class="fas fa-calendar-plus"></i>
                                 <span>Mulai: {{ subscription.start_date|date:"d M Y" }}</span>
                             </div>
                             
@@ -450,30 +513,34 @@
                                 </div>
                             {% endif %}
                             
-                            {% if subscription.status == 'ACTIVE' %}
-                                <div class="status-badge status-active">
-                                    <i class="fas fa-check-circle"></i>Aktif
-                                </div>
-                            {% elif subscription.status == 'EXPIRED' %}
-                                <div class="status-badge status-expired">
-                                    <i class="fas fa-times-circle"></i>Kedaluwarsa
-                                </div>
-                            {% else %}
-                                <div class="status-badge status-none">
-                                    <i class="fas fa-pause-circle"></i>{{ subscription.status }}
-                                </div>
-                            {% endif %}
+                            <div style="margin-top: 1.5rem;">
+                                {% if subscription.status == 'ACTIVE' %}
+                                    <div class="status-badge status-active">
+                                        <i class="fas fa-check-circle"></i> Aktif
+                                    </div>
+                                {% elif subscription.status == 'EXPIRED' %}
+                                    <div class="status-badge status-expired">
+                                        <i class="fas fa-times-circle"></i> Kedaluwarsa
+                                    </div>
+                                {% else %}
+                                    <div class="status-badge status-none">
+                                        <i class="fas fa-pause-circle"></i> {{ subscription.status }}
+                                    </div>
+                                {% endif %}
+                            </div>
                         </div>
                         
                         {% if subscription.status == 'EXPIRED' or not subscription.is_active %}
                             <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.2);">
-                                <p style="margin-bottom: 1rem; opacity: 0.9;">
+                                <p style="margin-bottom: 1.5rem; opacity: 0.9; text-align: center;">
                                     <i class="fas fa-info-circle"></i>
                                     Berlangganan Anda telah berakhir. Perpanjang sekarang untuk melanjutkan akses.
                                 </p>
-                                <a href="{% url 'pricing' %}" class="btn btn-lg">
-                                    <i class="fas fa-sync"></i>Perpanjang Berlangganan
-                                </a>
+                                <div style="text-align: center;">
+                                    <a href="{% url 'pricing' %}" class="btn-lg">
+                                        <i class="fas fa-sync-alt"></i> Perpanjang Berlangganan
+                                    </a>
+                                </div>
                             </div>
                         {% endif %}
                     {% else %}
@@ -481,8 +548,8 @@
                             <i class="fas fa-lock"></i>
                             <h5>Belum Berlangganan</h5>
                             <p>Anda belum memiliki berlangganan aktif. Pilih paket yang sesuai untuk mulai belajar!</p>
-                            <a href="{% url 'pricing' %}" class="btn btn-lg">
-                                <i class="fas fa-star"></i>Lihat Paket Berlangganan
+                            <a href="{% url 'pricing' %}" class="btn-lg" style="text-decoration: none;">
+                                Lihat Paket Berlangganan
                             </a>
                         </div>
                     {% endif %}
