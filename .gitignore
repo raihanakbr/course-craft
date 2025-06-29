@@ -2,9 +2,15 @@
 *.log
 *.pot
 *.pyc
-__pycache__
+__pycache__/
+*/__pycache__/
+**/__pycache__/
 db.sqlite3
 media
+
+# Scripts and build tools
+rebuild_commits.ps1
+rebuild_commits.sh
 
 # Backup files
 *.bak 
