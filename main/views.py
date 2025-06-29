@@ -270,19 +270,23 @@ def video_detail(request, course_slug, video_slug):
         
         return JsonResponse({'success': False, 'error': 'Authentication required'})
     
-    # Check access
-    has_access = False
-    if video.is_preview:
-        has_access = True
-    elif not course.is_premium:
-        has_access = True
-    elif request.user.is_authenticated:
-        try:
-            user_subscription = UserSubscription.objects.get(user=request.user)
-            if user_subscription.is_active:
-                has_access = True
-        except UserSubscription.DoesNotExist:
-            pass
+    # Check access function
+    def user_has_video_access(user, target_video):
+        """Check if user has access to a specific video"""
+        if target_video.is_preview:
+            return True
+        elif not course.is_premium:
+            return True
+        elif user.is_authenticated:
+            try:
+                user_subscription = UserSubscription.objects.get(user=user)
+                return user_subscription.is_active
+            except UserSubscription.DoesNotExist:
+                pass
+        return False
+    
+    # Check access to current video
+    has_access = user_has_video_access(request.user, video)
     
     if not has_access:
         messages.error(request, 'Anda tidak memiliki akses ke video ini.')
@@ -297,8 +301,12 @@ def video_detail(request, course_slug, video_slug):
             course=course
         )
     
-    # Get all videos for navigation
+    # Get all videos for navigation with access information
     course_videos = course.videos.filter(is_published=True).order_by('order')
+    
+    # Add access information to each video
+    for course_video in course_videos:
+        course_video.user_has_access = user_has_video_access(request.user, course_video)
     
     context = {
         'course': course,

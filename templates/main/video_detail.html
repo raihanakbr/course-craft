@@ -469,7 +469,7 @@
             padding: 1.25rem 1.5rem;
             border-bottom: 1px solid #f0f0f0;
             transition: all 0.3s ease;
-            cursor: pointer;
+            cursor: default;
         }
 
         .video-list-item:hover {
@@ -483,6 +483,14 @@
 
         .video-list-item.current-video:hover {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .video-list-item:has(a.video-item-title) {
+            cursor: pointer;
+        }
+        
+        .video-list-item:has(a.video-item-title):hover {
+            background-color: #f8f9fa;
         }
 
         .video-item-content {
@@ -501,12 +509,14 @@
             margin-bottom: 0.25rem;
             text-decoration: none;
             color: inherit;
+            transition: color 0.2s ease;
         }
 
         .video-item-title:hover {
-            color: inherit;
+            color: #667eea !important;
+            text-decoration: none;
         }
-
+        
         .video-item-meta {
             font-size: 0.875rem;
             opacity: 0.8;
@@ -744,7 +754,7 @@
                                 <div class="video-list-item {% if course_video.id == video.id %}current-video{% endif %}">
                                     <div class="video-item-content">
                                         <div class="video-item-info">
-                                            {% if course_video.is_preview or course_video.id == video.id %}
+                                            {% if course_video.user_has_access %}
                                                 <a href="{% url 'video_detail' course.slug course_video.slug %}" 
                                                    class="video-item-title">
                                                     {{ course_video.order }}. {{ course_video.title }}
